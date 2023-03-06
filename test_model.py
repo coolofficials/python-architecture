@@ -50,6 +50,24 @@ def test_cannot_allocate_if_skus_do_not_match():
     assert small_table_batch.can_allocate(large_table_order_line) is False
 
 
+def test_can_only_deallocate_allocated_lines():
+    batch = model.Batch("batch_1", "SMALL-TABLE", 20, eta=today)
+    unallocated_order_line = model.OrderLine("order_1", "SMALL-TABLE", 2)
+
+    batch.deallocate(unallocated_order_line)
+
+    assert batch.available_quantity == 20
+
+    allocated_order_line = model.OrderLine("order_1", "SMALL-TABLE", 5)
+    batch.allocate(allocated_order_line)
+
+    assert batch.available_quantity == 15
+
+    batch.deallocate(allocated_order_line)
+
+    assert batch.available_quantity == 20
+
+
 def test_prefers_warehouse_batches_to_shipments():
     pytest.fail("todo")
 

@@ -8,9 +8,17 @@ class Batch:
         self.sku = sku
         self.available_quantity = available_quantity
         self.eta = eta
+        self.allocated_order_lines: set["OrderLine"] = set()
 
     def allocate(self, order_line: "OrderLine"):
-        self.available_quantity -= order_line.quantity
+        if self.can_allocate(order_line):
+            self.available_quantity -= order_line.quantity
+            self.allocated_order_lines.add(order_line)
+
+    def deallocate(self, order_line: "OrderLine"):
+        if order_line in self.allocated_order_lines:
+            self.allocated_order_lines.remove(order_line)
+            self.available_quantity += order_line.quantity
 
     def can_allocate(self, order_line: "OrderLine"):
         return self.sku == order_line.sku and self.available_quantity >= order_line.quantity
