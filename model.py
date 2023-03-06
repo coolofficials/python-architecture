@@ -13,11 +13,11 @@ class Batch:
         self.available_quantity -= order_line.quantity
 
     def can_allocate(self, order_line: "OrderLine"):
-        return self.sku == order_line.SKU and self.available_quantity >= order_line.quantity
+        return self.sku == order_line.sku and self.available_quantity >= order_line.quantity
 
 
 @dataclasses.dataclass(frozen=True)
 class OrderLine:
     order_reference: str
-    SKU: str
+    sku: str
     quantity: int
