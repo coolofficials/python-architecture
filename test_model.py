@@ -2,20 +2,20 @@
 # pyright: reportGeneralTypeIssues=false
 # flake8: noqa
 
-from datetime import date, timedelta
+import datetime
 
 import pytest
 
-from model import Batch, OrderLine
+import model
 
-today = date.today()
-tomorrow = today + timedelta(days=1)
-later = tomorrow + timedelta(days=10)
+today = datetime.date.today()
+tomorrow = today + datetime.timedelta(days=1)
+later = tomorrow + datetime.timedelta(days=10)
 
 
 def test_allocating_to_a_batch_reduces_the_available_quantity():
-    batch = Batch("batch_1", "SMALL-TABLE", 20, eta=today)
-    order_line = OrderLine("order_1", "SMALL-TABLE", 2)
+    batch = model.Batch("batch_1", "SMALL-TABLE", 20, eta=today)
+    order_line = model.OrderLine("order_1", "SMALL-TABLE", 2)
 
     batch.allocate(order_line)
 
@@ -23,29 +23,29 @@ def test_allocating_to_a_batch_reduces_the_available_quantity():
 
 
 def test_can_allocate_if_available_greater_than_required():
-    large_batch = Batch("batch_1", "SMALL-TABLE", 20, eta=today)
-    small_order_line = OrderLine("order_1", "SMALL-TABLE", 2)
+    large_batch = model.Batch("batch_1", "SMALL-TABLE", 20, eta=today)
+    small_order_line = model.OrderLine("order_1", "SMALL-TABLE", 2)
 
     assert large_batch.can_allocate(small_order_line)
 
 
 def test_cannot_allocate_if_available_smaller_than_required():
-    small_batch = Batch("batch_1", "SMALL-TABLE", 2, eta=today)
-    large_order_line = OrderLine("order_1", "SMALL-TABLE", 5)
+    small_batch = model.Batch("batch_1", "SMALL-TABLE", 2, eta=today)
+    large_order_line = model.OrderLine("order_1", "SMALL-TABLE", 5)
 
     assert small_batch.can_allocate(large_order_line) is False
 
 
 def test_can_allocate_if_available_equal_to_required():
-    batch = Batch("batch_1", "SMALL-TABLE", 2, eta=today)
-    order_line = OrderLine("order_1", "SMALL-TABLE", 2)
+    batch = model.Batch("batch_1", "SMALL-TABLE", 2, eta=today)
+    order_line = model.OrderLine("order_1", "SMALL-TABLE", 2)
 
     assert batch.can_allocate(order_line)
 
 
 def test_cannot_allocate_if_skus_do_not_match():
-    small_table_batch = Batch("batch_1", "SMALL-TABLE", 2, eta=today)
-    large_table_order_line = OrderLine("order_1", "LARGE-TABLE", 2)
+    small_table_batch = model.Batch("batch_1", "SMALL-TABLE", 2, eta=today)
+    large_table_order_line = model.OrderLine("order_1", "LARGE-TABLE", 2)
 
     assert small_table_batch.can_allocate(large_table_order_line) is False
 
