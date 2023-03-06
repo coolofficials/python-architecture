@@ -3,6 +3,7 @@
 # flake8: noqa
 
 from datetime import date, timedelta
+
 import pytest
 
 from model import Batch, OrderLine
@@ -13,7 +14,7 @@ later = tomorrow + timedelta(days=10)
 
 
 def test_allocating_to_a_batch_reduces_the_available_quantity():
-    batch = Batch("batch_1", "SMALL-TABLE", 20)
+    batch = Batch("batch_1", "SMALL-TABLE", 20, eta=date.today)
     order_line = OrderLine("order_1", "SMALL-TABLE", 2)
 
     batch.allocate(order_line)
