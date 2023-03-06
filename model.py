@@ -3,14 +3,17 @@ import datetime
 
 
 class Batch:
-    def __init__(self, reference: str, SKU: str, available_quantity: int, ETA: datetime.date | None):
+    def __init__(self, reference: str, sku: str, available_quantity: int, eta: datetime.date | None):
         self.reference = reference
-        self.SKU = SKU
+        self.sku = sku
         self.available_quantity = available_quantity
-        self.ETA = ETA
+        self.eta = eta
 
     def allocate(self, order_line: "OrderLine"):
         self.available_quantity -= order_line.quantity
+
+    def can_allocate(self, order_line: "OrderLine"):
+        return self.sku == order_line.SKU and self.available_quantity >= order_line.quantity
 
 
 @dataclasses.dataclass(frozen=True)
